@@ -1,0 +1,94 @@
+:root {
+  --bg: #1e1e2e;
+  --panel: #2a2a3c;
+  --accent: #89b4fa;
+  --text: #cdd6f4;
+  --error: #f38ba8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.app {
+  background: var(--panel);
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 520px;
+  width: 100%;
+}
+
+h1 {
+  margin-top: 0;
+  color: var(--accent);
+}
+
+.hint {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.inputs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.inputs label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.inputs input {
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #11111b;
+  color: var(--text);
+}
+
+.operations {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.op-btn {
+  padding: 0.6rem;
+  border: none;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #11111b;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.op-btn:hover {
+  opacity: 0.85;
+}
+
+.result {
+  font-size: 1.25rem;
+  padding: 0.75rem;
+  background: #11111b;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.result.error {
+  color: var(--error);
+}

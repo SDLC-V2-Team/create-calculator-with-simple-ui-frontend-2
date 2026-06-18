@@ -1,79 +1,80 @@
-# Simple Calculator
+# Scientific Calculator
 
-A minimal, dependency-free calculator implemented as a **single HTML file** with
-inline CSS and JavaScript, per [ADR-001](#architecture).
+A modular scientific calculator built in **TypeScript**, extending a basic
+calculator engine with scientific operations (trigonometry, logarithms,
+exponentials) using a **function registry pattern** as defined in **ADR-001**.
 
-## Capabilities
+## Why this design?
 
-- Perform basic arithmetic operations: `+`, `-`, `*`, `/`, `%`, parentheses, and unary +/-.
-- Display a simple, responsive user interface.
+Per ADR-001, scientific operations are encapsulated in a dedicated
+`ScientificFunctions` module and integrated into the calculation engine via a
+**registry**. This keeps the core engine **closed for modification but open for
+extension** — new categories (e.g. hyperbolic functions) can be added by
+registering a new module without changing the engine.
 
 ## Architecture
 
-This project follows **ADR-001 — "Use a single HTML file with embedded JavaScript
- for UI and arithmetic logic"**.
+```
+src/
+  core/
+    types.ts             # OperationFn, OperationDefinition contracts
+    FunctionRegistry.ts  # Registry pattern (register/list/get)
+    Calculator.ts        # Engine — resolves & executes via registry only
+  modules/
+    BasicOperations.ts    # +, -, *, / (existing behaviour preserved)
+    ScientificFunctions.ts# sin, cos, tan, ln, log10, exp, pow, sqrt
+  bootstrap.ts            # Composition root — wires registry + modules
+  index.ts                # Node CLI entry point (demo)
+  web/main.ts             # Browser UI controller (auto-renders ops)
+index.html                # Web UI shell
+public/styles.css         # Web UI styles
+tests/                    # Vitest unit tests
+```
 
-Key points:
+## Requirements
 
-- **Single-file deployment** — everything lives in `index.html`.
-- **No external dependencies** — no build step, no package manager required.
-- **Safe evaluation** — arithmetic is evaluated by a custom tokenizer +
-  recursive-descent parser. We deliberately **avoid `eval()`** to remove the
-  associated security risk (see ADR-001 consequences).
+- Node.js >= 18
+- npm >= 9
 
-## Running
-
-Because it is a static file, just open it in a browser:
+## Setup
 
 ```bash
-# macOS
-open index.html
-
-# Linux
-xdg-open index.html
-
-# Windows (PowerShell)
-start index.html
+npm install
 ```
 
-Or serve it with any static file server:
+## Run (CLI demo)
 
 ```bash
-# Python 3
-python3 -m http.server 8000
-# then visit http://localhost:8000
-
-# Node (if installed)
-npx serve .
+npm run build
+npm start
 ```
 
-## Usage
+## Run (Web UI)
 
-- Click the on-screen buttons, **or** use your keyboard:
-  - Digits `0-9`, `.`, and operators `+ - * / % ( )`
-  - `Enter` or `=` to evaluate
-  - `Backspace` to delete the last character
-  - `Escape` to clear (AC)
-
-## Testing the evaluator
-
-The parser is exposed on `window.Calculator` for quick checks in the browser
-console:
-
-```js
-Calculator.evaluate('2 + 3 * (4 - 1)'); // 11
-Calculator.evaluate('10 % 3');          // 1
-Calculator.evaluate('-5 + 2');          // -3
+```bash
+npm run dev
 ```
 
-## Project Structure
+Then open the URL Vite prints (default http://localhost:5173). The UI renders a
+button for every registered operation automatically.
 
+## Test
+
+```bash
+npm test
 ```
-.
-├── index.html   # UI + safe arithmetic parser (entire app)
-├── README.md
-└── .gitignore
-```
+
+## Extending with new operations
+
+1. Create a new module exporting `OperationDefinition[]` (see
+   `src/modules/ScientificFunctions.ts`).
+2. Register it in `src/bootstrap.ts` via `registry.registerAll(...)`.
+3. No changes to `Calculator.ts` are required — and the UI updates itself.
+
+## Traceability
+
+- **ADR-001** — Extend Calculator with Modular Scientific Operations
+- **FR-001** — scientific arithmetic (trigonometry, logarithms, exponentials, etc.)
 
 ## License
 

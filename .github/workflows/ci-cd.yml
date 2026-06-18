@@ -20,9 +20,9 @@
 #   AWS_SECRET_ACCESS_KEY
 #   AWS_REGION             (e.g. us-east-1)
 #   AWS_ACCOUNT_ID         (12-digit AWS account number)
-#   ECR_REPOSITORY         (e.g. calculator-ui)
+#   ECR_REPOSITORY         (e.g. scientific-calculator)
 #   ECS_CLUSTER            (e.g. leave-mgmt-cluster)
-#   ECS_SERVICE            (e.g. calculator-ui)
+#   ECS_SERVICE            (e.g. scientific-calculator)
 
 name: CI/CD
 
@@ -46,18 +46,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Node
+        uses: actions/setup-node@v4
         with:
-          python-version: "3.11"
+          node-version: "20"
+          cache: npm
 
-      - name: Install Python deps
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Install Node deps
+        run: if [ -f package-lock.json ]; then npm ci; else npm install; fi
 
       - name: Validate (lint only — no tests run per directive)
-        run: echo "No lint configured for this language"
+        run: |
+          if [ -f package.json ] && grep -q '"lint"' package.json; then
+            npm run lint || echo "Lint warnings (non-fatal)"
+          else
+            echo "No lint script — skipping"
+          fi
 
       - name: Configure AWS credentials
         if: github.event_name == 'push'
