@@ -1,12 +1,18 @@
-# OS / editor noise
-.DS_Store
-Thumbs.db
-*.swp
-.idea/
-.vscode/
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-web/
 
 # Logs
 *.log
+npm-debug.log*
 
-# Optional local static-server tooling
-node_modules/
+# Editor / OS
+.DS_Store
+.vscode/
+.idea/
+
+# Test coverage
+coverage/
